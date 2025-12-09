@@ -50,19 +50,19 @@ const Navbar = () => {
           onClick={() => setIsOpen(false)}
         />
 
-        <Link onClick={() => setIsOpen(false)} to="/">
+        <Link onClick={() => {scrollTo(0,0); setIsOpen(false)}} to="/">
           Home
         </Link>
-        <Link onClick={() => setIsOpen(false)} to="/movies">
+        <Link onClick={() => {scrollTo(0,0); setIsOpen(false)}} to="/movies">
           Movies
         </Link>
-        <Link onClick={() => setIsOpen(false)} to="/">
+        <Link onClick={() => {scrollTo(0,0); setIsOpen(false)}} to="/">
           Theaters
         </Link>
-        <Link onClick={() => setIsOpen(false)} to="/">
+        <Link onClick={() => {scrollTo(0,0); setIsOpen(false)}} to="/">
           Releases
         </Link>
-        <Link onClick={() => setIsOpen(false)} to="/favourites">
+        <Link onClick={() => {scrollTo(0,0); setIsOpen(false)}} to="/favourite">
           Favourites
         </Link>
       </div>
