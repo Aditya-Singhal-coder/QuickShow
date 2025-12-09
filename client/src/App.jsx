@@ -1,0 +1,41 @@
+import React from 'react';
+import Navbar from './components/Navbar';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import Home from './pages/Home';
+import Movies from './pages/Movies';
+import MovieDetails from './pages/MovieDetails';
+import SeatLayout from './pages/SeatLayout';
+import MyBookings from './pages/MyBookings';
+import Favourite from './pages/Favourite';
+import {Toaster} from 'react-hot-toast';
+import Footer from './components/Footer';
+
+
+const App = () => {
+  // navbar must be hide when we are on admin page
+  // for this we need to check the url before return
+
+  const isAdminRoute = useLocation().pathname.startsWith('/admin')
+
+
+  return (
+    <>
+      <Toaster/>   {/* use this to send notification for all the routes*/}
+      {!isAdminRoute &&  <Navbar/>}
+      {/* whenever we load the web page the navbar will be mounted */}
+
+      <Routes>
+        <Route path='/' element={<Home/>} />
+        <Route path='/movies' element={<Movies/>} />
+        <Route path='/movies/:id' element={<MovieDetails/>} />
+        <Route path='/movies/:id/:date' element={<SeatLayout/>} />
+        <Route path='/my-bookings' element={<MyBookings/>} />
+        <Route path='/favourites' element={<Favourite/>} />
+
+      </Routes>
+        {!isAdminRoute &&  <Footer/>}
+    </>
+  );
+}
+
+export default App;
