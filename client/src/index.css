@@ -23,3 +23,7 @@ body{
   color: white; /*text in white*/
   background-color: #09090B;  /*background in black*/
 }
+
+.no-scrollbar{
+  scrollbar-width: none;
+}
