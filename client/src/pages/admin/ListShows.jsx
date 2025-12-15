@@ -69,7 +69,7 @@ const ListShows = () => {
                             </td>
                             </tr>
                         ))}
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </>

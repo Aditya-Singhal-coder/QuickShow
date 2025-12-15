@@ -27,3 +27,16 @@ body{
 .no-scrollbar{
   scrollbar-width: none;
 }
+
+/* to remove up and down button used to select price or anything */
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+}
+
+/* to show calender icon */
+
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
