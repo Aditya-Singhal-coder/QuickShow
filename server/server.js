@@ -36,6 +36,7 @@ import connectDB from "./configs/db.js";
 import { clerkMiddleware } from "@clerk/express";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest/index.js";
+import showRouter from "./routes/showRoutes.js";
 
 dotenv.config();
 
@@ -47,13 +48,13 @@ app.use(express.json());
 app.use(cors());
 app.use(clerkMiddleware());
 
-// Health check
-app.get("/", (req, res) => {
-  res.send("Server is running");
-});
+// // Health Check Route
+// app.get("/", (req, res) => res.send("Server is running"));
 
-// Inngest endpoint (MUST match dashboard URL)
+// API Routes
+
 app.use("/api/inngest", serve({ client: inngest, functions }));
+app.use('/api/show', showRouter);
 
 // Start server AFTER DB connection
 const startServer = async () => {
