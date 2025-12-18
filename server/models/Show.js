@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 const showSchema = new mongoose.Schema({
     movie: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,// string
         required: true,
         ref: 'Movie'
     },

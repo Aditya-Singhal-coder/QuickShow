@@ -1,0 +1,35 @@
+// model to book the movies and store that data in db
+
+import mongoose from "mongoose";
+
+const bookingSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId, // string
+        required: true,
+        ref: 'User'
+    },
+    show: {
+        type: mongoose.Schema.Types.ObjectId, // string
+        required: true,
+        ref: 'Show'
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
+    bookedSeats: {
+        type: Array,
+        required: true
+    },
+    isPaid: {
+        type: Boolean,
+        default: false
+    },
+    paymentLink: {
+        type: String
+    },
+},{timestamps: true});
+
+const Booking = mongoose.model('Booking', bookingSchema);
+
+export default Booking;
