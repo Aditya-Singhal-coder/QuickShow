@@ -8,7 +8,7 @@ import Show from "../models/Show.js";
 import User from "../models/User.js";
 
 export const isAdmin = async (req,res) => {
-    res.json({
+    return res.json({
         success: true,
         isAdmin: true
     })
@@ -40,7 +40,7 @@ export const getDashboardData = async (req,res) => {
 
     } catch (error) {
         console.log(error);
-        res.json({
+        return res.json({
             success: false,
             message: error.message
         });
@@ -56,7 +56,27 @@ export const getAllShows = async (req,res) => {
         res.json({success: true, shows});
     } catch (error) {
         console.log(error);
-        res.json({
+        return res.json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
+// controller to get all bookings details for admin dashboard
+
+export const getAllBookings = async (req, res) => {
+    try {
+        // get all booking data from Booking model
+        const bookings = await Booking.find({}).populate('user').populate({
+            path: "show",
+            populate: {path: "movie"}
+        }).sort({createdAt: -1});
+        res.json({success: true, bookings});
+
+    } catch (error) {
+        console.log(error);
+        return res.json({
             success: false,
             message: error.message
         });

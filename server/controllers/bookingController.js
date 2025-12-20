@@ -75,7 +75,7 @@ export const createBooking = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        res.json({
+        return res.json({
             success: false,
             message: error.message
         });
@@ -99,7 +99,7 @@ export const getOccupiedSeats = async (req,res)=> {
 
     } catch (error) {
         console.log(error.message);
-        res.json({
+        return res.json({
             success: false,
             message: error.message
         });

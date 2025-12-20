@@ -17,10 +17,10 @@ export const getNowPlayingMovies = async (req, res) => {
 
         // get movies from data using results key
         const movies = data.results;
-        res.json({success: true, movies: movies});
+        return res.json({success: true, movies: movies});
     } catch (error) {
         console.log(error);
-        res.json({success: false, message: error.message});
+        return res.json({success: false, message: error.message});
     }
 }
 
@@ -94,11 +94,11 @@ export const addShow = async (req, res) => {
             await Show.insertMany(showToCreate);
         }
 
-        res.json({success: true, message: 'Shows added successfully'});
+        return res.json({success: true, message: 'Shows added successfully'});
 
     } catch (error) {
         console.log(error);
-        res.json({success: false, message: error.message});
+        return res.json({success: false, message: error.message});
     }
 }
 
@@ -112,12 +112,12 @@ export const getShows = async (req,res) => {
 
         // filter unique shows
         const uniqueShows = new Set(shows.map(show => show.movie))
-        res.json({success: true, shows: Array.from(uniqueShows)});
+        return res.json({success: true, shows: Array.from(uniqueShows)});
 
     } catch (error) {
         console.log(error);
         
-        res.json({success: false, message: error.message});
+        return res.json({success: false, message: error.message});
     }
 }
 
@@ -142,13 +142,13 @@ export const getSingleShow = async (req,res) => {
             dateTime[date].push({time: show.showDateTime, showId: show._id})
         })
 
-        res.json({
+        return res.json({
             success: true,
             movie,
             dateTime
         })
     } catch (error) {
         console.log(error);
-        res.json({success: false, message: error.message});
+        return res.json({success: false, message: error.message});
     }
 }
