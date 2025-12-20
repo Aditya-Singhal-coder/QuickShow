@@ -4,10 +4,14 @@ import { dummyShowsData } from "../../assets/assets";
 import Loading from "../../components/Loading";
 import { CheckIcon, DeleteIcon, StarIcon } from "lucide-react";
 import KConverter from "../../lib/Kconverter";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 
 
 const AddShows = () => {
+
+    const {axios, getToken, user, TMDB_IMAGE_BASE_URL} = useAppContext();
 
     const currency = import.meta.env.VITE_CURRENCY
     const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
@@ -16,8 +20,23 @@ const AddShows = () => {
     const [dateTimeInput, setDateTimeInput] = useState("");
     const [showPrice, setShowPrice] = useState("");
 
+    // when click on add show button to add show it should set and display 
+    // so for this use some functionallity
+    const [addingShow, setAddingShow] = useState(false);
+
     const fetchNowPlayingMovies = async () => {
-        setNowPlayingMovies(dummyShowsData);
+        // get the data from api call.. means need axios , user , token
+        try {
+            const {data} = await axios.get('/api/show/now-playing', {
+                headers: {Authorization: `Bearer ${await getToken()}`}
+            })
+            if(data.success){
+                setNowPlayingMovies(data.movies);
+            }
+        } catch (error) {
+            console.log('Error in fetching movies: ', error);
+        }
+
     };
 
     const handleDateTimeAdd = ()=> {
@@ -52,10 +71,57 @@ const AddShows = () => {
         });
     };
 
+    // handleSubmit function to handle adding shows when click on add shows and display it
+    const handleSubmit = async () => {
+        try {
+            setAddingShow(true);
+            if(!selectedMovies || Object.keys(dateTimeSelection).length === 0 || !showPrice){
+                // if any of the data required is missing
+                return toast('Missing required fields');
+            }
+
+            // const showsInput = Object.entries(dateTimeSelection).map(([date,time])=> (
+            //     {date, time}
+            // ));
+            const showsInput = Object.entries(dateTimeSelection).flatMap(
+                ([date, times]) => times.map(time => ({ date, time }))
+            );
+
+
+            const payload = {
+                movieId: selectedMovies,
+                showsInput,
+                showPrice: Number(showPrice)
+            }
+            // api call that add the selected show in db
+            const {data} = await axios.post('/api/show/add', payload, {
+                headers: { Authorization: `Bearer ${await getToken()}`}
+            })
+
+            if(data.success){
+                toast.success(data.message);
+                setSelectedMovies(null);
+                setDateTimeSelection({});
+                setShowPrice("");          
+            }
+            else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            console.log("Subission error: ",error);
+            toast.error('An error occurred. Please try again.')
+        }
+        finally{
+            setAddingShow(false);
+        }
+    }
+
 
     useEffect(()=>{
-        fetchNowPlayingMovies();
-    },[]);
+        if(user){
+            fetchNowPlayingMovies();
+        }
+    },[user]);
 
 
     return nowPlayingMovies.length > 0 ? (
@@ -70,7 +136,7 @@ const AddShows = () => {
                         group-hover:not-hover:opacity-40 hover:-translate-y-1 transition duration-300`}
                           onClick={()=>setSelectedMovies(movie.id)}>
                             <div className="relative rounded-lg overflow-hidden">
-                                <img src={movie.poster_path} alt="" className="w-full 
+                                <img src={TMDB_IMAGE_BASE_URL + movie.poster_path} alt="" className="w-full 
                                 object-cover brightness-90"/>
                                 <div className="text-sm flex items-center justify-between 
                                 p-2 bg-black/70 w-full absolute bottom-0 left-0">
@@ -159,8 +225,10 @@ const AddShows = () => {
                 </div>
             )}
 
-            <button className="bg-primary text-white px-8 py-2 mt-6 rounded hover:bg-primary/90 
-            transition-all cursor-pointer">
+            <button 
+                onClick={handleSubmit} disabled={addingShow}
+                className="bg-primary text-white px-8 py-2 mt-6 rounded hover:bg-primary/90 
+                transition-all cursor-pointer">
                 Add Show
             </button>
         </>

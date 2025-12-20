@@ -14,7 +14,8 @@ import Dashboard from './pages/admin/Dashboard';
 import AddShows from './pages/admin/addShows';
 import ListShows from './pages/admin/listShows';
 import ListBookings from './pages/admin/ListBookings';
-
+import { useAppContext } from './context/AppContext';
+import { SignIn } from '@clerk/clerk-react';
 
 const App = () => {
   // navbar must be hide when we are on admin page
@@ -22,12 +23,16 @@ const App = () => {
 
   const isAdminRoute = useLocation().pathname.startsWith('/admin')
 
+  {/* for check if user is log in or not*/}
+    const {user} = useAppContext();  
+
 
   return (
     <>
       <Toaster/>   {/* use this to send notification for all the routes*/}
       {!isAdminRoute &&  <Navbar/>}
       {/* whenever we load the web page the navbar will be mounted */}
+
 
       <Routes>
         <Route path='/' element={<Home/>} />
@@ -39,7 +44,11 @@ const App = () => {
 
         {/*Routes for Admin*/}
 
-        <Route path='/admin/*' element={<Layout/>}>
+        <Route path='/admin/*' element={user ? <Layout/> : (
+          <div className='min-h-screen flex justify-center items-center'>
+            <SignIn fallbackRedirectUrl={'/admin'}/>
+          </div>
+        )}>
             <Route index element={<Dashboard/>}/>
             <Route path='add-shows' element={<AddShows/>}/>
             <Route path='list-shows' element={<ListShows/>}/>
