@@ -5,8 +5,12 @@ import Loading from "../../components/Loading";
 import Title from "../../components/admin/Title";
 import BlurCircle from "../../components/BlurCircle";
 import dateFormate from "../../lib/dateFormate";
+import { useAppContext } from "../../context/AppContext.jsx";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
+
+    const {axios, getToken, user, image_base_url} = useAppContext();
 
     const currency = import.meta.env.VITE_CURRENCY
 
@@ -37,14 +41,29 @@ const Dashboard = () => {
 ];
 
 
+    // fetch dashboard data from the server using axios and set it to state
     const fetchDashboardDate = async () => {
-        setDashboardData(dummyDashboardData);
-        setLoading(false)
+        try {
+            const {data} = await axios.get("/api/admin/dashboard", {
+                headers: {Authorization: `Bearer ${await getToken()}`}
+            });
+            if(data.success){
+                setDashboardData(data.dashboardData);
+                setLoading(false);
+            }
+            else{
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error("Error in fetching dashboard data", error);
+        }
     }
 
     useEffect(()=>{
-        fetchDashboardDate();
-    },[]);
+        if(user && user.privateMetadata.role === 'admin'){
+            fetchDashboardDate();
+        }
+    },[user]);
 
     return !loading ? (
         <>
@@ -72,7 +91,7 @@ const Dashboard = () => {
                         <div key={show._id} className="w-55 rounded-lg overflow-hidden 
                         h-full pb-3 bg-primary/0 border border-primary/20 hover:-translate-y-1 
                         transition duration-300">
-                            <img src={show.movie.poster_path} alt="" className="h-60 w-full object-cover"/>
+                            <img src={image_base_url + show.movie.poster_path} alt="" className="h-60 w-full object-cover"/>
                             <p className="font-medium p-2 truncate">{show.movie.title}</p>
                                 <div className="flex items-center justify-between px-2">
                                     <p className="text-lg font-medium">{currency} {show.showPrice}</p>

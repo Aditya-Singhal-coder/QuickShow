@@ -1,6 +1,3 @@
-
-
-
 // controller to check if user is admin
 
 import Booking from "../models/Booking.js"

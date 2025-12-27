@@ -31,7 +31,7 @@ const checkSeatsAvailablity = async (showId, selectedSeats) => {
 export const createBooking = async (req, res) => {
     try {
         // first need to get the userId from req.auth
-        const {userId} = req.auth;
+        const {userId} = req.auth();
         const {showId, selectedSeats} = req.body;
 
         // get origin or host url or frontend url from headers
