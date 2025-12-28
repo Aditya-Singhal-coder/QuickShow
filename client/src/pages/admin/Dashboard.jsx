@@ -10,8 +10,8 @@ import toast from "react-hot-toast";
 
 const Dashboard = () => {
 
-    const {axios, getToken, user, image_base_url} = useAppContext();
-
+    const {axios, getToken, user, TMDB_IMAGE_BASE_URL} = useAppContext();
+    
     const currency = import.meta.env.VITE_CURRENCY
 
     const [dashboardData, setDashboardData] = useState({
@@ -91,7 +91,7 @@ const Dashboard = () => {
                         <div key={show._id} className="w-55 rounded-lg overflow-hidden 
                         h-full pb-3 bg-primary/0 border border-primary/20 hover:-translate-y-1 
                         transition duration-300">
-                            <img src={image_base_url + show.movie.poster_path} alt="" className="h-60 w-full object-cover"/>
+                            <img src={TMDB_IMAGE_BASE_URL + show.movie.poster_path} alt="" className="h-60 w-full object-cover"/>
                             <p className="font-medium p-2 truncate">{show.movie.title}</p>
                                 <div className="flex items-center justify-between px-2">
                                     <p className="text-lg font-medium">{currency} {show.showPrice}</p>
