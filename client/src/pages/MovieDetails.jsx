@@ -17,7 +17,7 @@ const MovieDetails = () => {
   const {id} = useParams();
   const [show, setShow] = useState(null);
 
-  const {shows, axios, getToken, fetchFavoritesMovies, favoriteMovies,
+  const {shows, axios, getToken, user, fetchFavoritesMovies, favoriteMovies,
         TMDB_IMAGE_BASE_URL} = useAppContext();
 
   const getShow = async () => {

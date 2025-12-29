@@ -4,9 +4,13 @@ import Loading from '../components/Loading';
 import BlurCircle from '../components/BlurCircle';
 import timeFormat from '../lib/timeFormat';
 import dateFormate from '../lib/dateFormate';
+import { useAppContext } from '../context/AppContext';
 
 
 const MyBookings = () => {
+
+  const {axios, getToken, user, TMDB_IMAGE_BASE_URL} = useAppContext();
+  
 
   const currency = import.meta.env.VITE_CURRENCY
 
@@ -14,13 +18,26 @@ const MyBookings = () => {
   const [isLoading, setIsLoading] = useState(true)
   
   const getMyBookings = async () => {
-    setBookings(dummyBookingData);
+    try {
+      const {data} = await axios.get('/api/user/bookings', {
+        headers: {Authorization: `Bearer ${await getToken()}`}
+      })
+
+      if(data.success){
+        setBookings(data.bookings)
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
     setIsLoading(false);
   }
 
   useEffect(()=>{
-    getMyBookings() // called whenever component get loaded
-  }, [])
+    if(user){
+       getMyBookings() // called whenever component get loaded
+    }
+  }, [user])
 
   return !(isLoading) ? (
     <div className='relative px-6 md:px-16 lg:px-40 pt-30 md:pt-40 min-h-[80vh]'>
@@ -38,7 +55,7 @@ const MyBookings = () => {
           {/*left side movie details and right side price and no. of seats*/ }
 
           <div className='flex flex-col md:flex-row'>
-            <img src={item.show.movie.poster_path} alt="" 
+            <img src={TMDB_IMAGE_BASE_URL + item.show.movie.poster_path} alt="" 
             className='md:max-w-45 aspect-video h-auto object-cover object-bottom rounded'/>
             <div className='flex flex-col p-4'>
               <p className='text-lg font-semibold'>{item.show.movie.title}</p>
