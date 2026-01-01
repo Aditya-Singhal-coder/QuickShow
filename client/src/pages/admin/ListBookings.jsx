@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { dummyBookingData } from "../../assets/assets";
 import Loading from "../../components/Loading";
 import Title from "../../components/admin/Title";
 import dateFormate from "../../lib/dateFormate";
@@ -21,7 +20,7 @@ const ListBookings = () => {
            });
 
            if(data.success){
-            setBookings(data.shows);
+            setBookings(data.bookings);
             
            }
            else{
@@ -55,23 +54,23 @@ const ListBookings = () => {
                         </tr>
                     </thead>
                     <tbody className="text-sm font-light">
-                        {bookings.map((item, index) => (
+                        {bookings?.map((item, index) => (
                             <tr key={index}
                              className="border-b border-primary/20 bg-primary/5 even:bg-primary/10">
                             <td className="p-2 min-w-45 pl-5">
-                                {item.user.name}
+                                {item?.user?.name ?? "---"}
                             </td>
                             <td className="p-2">
-                                {item.show.movie.title}
+                                {item?.show?.movie?.title ?? "---"}
                             </td>
                             <td className="p-2">
-                                {dateFormate(item.show.showDateTime)}
+                                 {item?.show?.showDateTime ? dateFormate(item.show.showDateTime) : "---"}
                             </td>
                             <td className="p-2">
                                 {Object.keys(item.bookedSeats).map(seat => item.bookedSeats[seat]).join(", ")}
                             </td>
                             <td className="p-2">
-                                {currency}{item.amount}
+                                 {currency}{item?.amount ?? "0"}
                             </td>
                             </tr>
                         ))}

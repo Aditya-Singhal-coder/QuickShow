@@ -34,7 +34,7 @@ const ListShows = () => {
     };
 
     useEffect(()=>{
-        if(user && user.privateMetadata.role === 'admin'){
+        if(user){
             getAllShows()
         }
     },[user])
