@@ -1,5 +1,3 @@
-// // import React from "react";
-
 // // this component used to make background color red blur
 // // as it is needed at many place so we make a component for this and use it directly
 
