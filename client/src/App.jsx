@@ -16,6 +16,7 @@ import ListShows from './pages/admin/ListShows.jsx';
 import ListBookings from './pages/admin/ListBookings';
 import { useAppContext } from './context/AppContext';
 import { SignIn } from '@clerk/clerk-react';
+import Loading from './components/Loading.jsx';
 
 const App = () => {
   // navbar must be hide when we are on admin page
@@ -40,6 +41,10 @@ const App = () => {
         <Route path='/movies/:id' element={<MovieDetails/>} />
         <Route path='/movies/:id/:date' element={<SeatLayout/>} />
         <Route path='/my-bookings' element={<MyBookings/>} />
+
+        <Route path='/loading/:nextUrl' element={<Loading/>} />
+
+
         <Route path='/favourites' element={<Favourite/>} />
 
         {/*Routes for Admin*/}

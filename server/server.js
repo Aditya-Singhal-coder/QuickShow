@@ -11,11 +11,31 @@ import showRouter from "./routes/showRoutes.js";
 import bookingRouter from "./routes/bookingRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import { stripeWebhooks } from "./controllers/stripeWebhooks.js";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Connect to Database
+// Start server AFTER DB connection
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, () =>
+      console.log(`Server listening on port ${PORT}`)
+    );
+  } catch (err) {
+    console.error("Failed to start server:", err);
+  }
+};
+
+startServer();
+
+// stripe webhooks route
+app.use('/api/stripe', express.raw({type: 'application/json'}), stripeWebhooks );
+
 
 // Middleware
 app.use(express.json());
@@ -35,21 +55,6 @@ app.use('/api/admin', adminRouter)
 app.use('/api/user', userRouter)
 
 
-
-
-// Start server AFTER DB connection
-const startServer = async () => {
-  try {
-    await connectDB();
-    app.listen(PORT, () =>
-      console.log(`Server listening on port ${PORT}`)
-    );
-  } catch (err) {
-    console.error("Failed to start server:", err);
-  }
-};
-
-startServer();
 
 
 

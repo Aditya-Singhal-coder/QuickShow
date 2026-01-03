@@ -1,4 +1,4 @@
-
+import stripe from 'stripe'
 
 import Booking from "../models/Booking.js";
 import Show from "../models/Show.js"
@@ -63,14 +63,43 @@ export const createBooking = async (req, res) => {
         showData.markModified('occupiedSeats');
         await showData.save(); // save the updated show data in db
 
-        // STRIPE PAYMENT GATEWAY INTEGRATION FOR NOW
+        // STRIPE PAYMENT GATEWAY INTEGRATION 
+
+        const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY)
+
+        // create line items for stripe checkout session
+        const line_items = [{
+            price_data: {
+                currency: 'usd',
+                product_data: {
+                    name: showData.movie.title
+                },
+                unit_amount: Math.floor(booking.amount) * 100, // amount in cents
+            },
+            quantity: 1
+        }]
+
+        // create a stripe checkout session
+        const session = await stripeInstance.checkout.sessions.create({
+            // after  payment url need to go
+            success_url: `${origin}/loading/my-bookings`,
+            cancel_url: `${origin}/my-bookings`,
+            line_items: line_items,
+            mode: 'payment',
+            metadata: {
+                bookingId: booking._id.toString()
+            },
+            expires_at: Math.floor(Date.now()/1000) + 30* 60 // session expires in 30 minutes
+
+        })
+
+        booking.paymentLink = session.url;
+        await booking.save(); // save the booking with payment link
 
         // respond with success and booking details
         return res.json({
             success: true,
-            message: 'Seats booked successfully..',
-            // bookingId: booking._id,
-            // amount: booking.amount
+            url: session.url
         })
 
     } catch (error) {

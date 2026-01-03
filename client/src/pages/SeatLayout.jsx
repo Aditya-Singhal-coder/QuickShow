@@ -106,8 +106,8 @@ const SeatLayout = () => {
       )
 
       if(data.success){
-        toast.success(data.message)
-        navigate('/my-bookings')
+        // redirect to stripe checkout page'
+        window.location.href = data.url
       }
       else{
         toast.error(data.message)
