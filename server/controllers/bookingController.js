@@ -2,6 +2,7 @@ import stripe from 'stripe'
 
 import Booking from "../models/Booking.js";
 import Show from "../models/Show.js"
+import { inngest } from '../inngest/index.js';
 
 // function to check avalilablity of selected seats for a movie for a particular show
 
@@ -95,6 +96,14 @@ export const createBooking = async (req, res) => {
 
         booking.paymentLink = session.url;
         await booking.save(); // save the booking with payment link
+
+        // Run Inngest scheduler function to check payment status after 10 min
+        await inngest.send({
+            name: "app/checkpayment",
+            data: {
+                bookingId: booking._id.toString()
+            }
+        })
 
         // respond with success and booking details
         return res.json({
